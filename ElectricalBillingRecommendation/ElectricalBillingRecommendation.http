@@ -1,0 +1,6 @@
+@ElectricalBillingRecommendation_HostAddress = http://localhost:5048
+
+GET {{ElectricalBillingRecommendation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
