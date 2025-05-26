@@ -3,7 +3,6 @@ using ElectricalBillingRecommendation.Data;
 using ElectricalBillingRecommendation.Dtos.TaxGroup;
 using ElectricalBillingRecommendation.Models;
 using ElectricalBillingRecommendation.Services.Interfaces;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElectricalBillingRecommendation.Services;
@@ -21,7 +20,7 @@ public class TaxGroupService : ITaxGroupService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<TaxGroupReadDto>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<TaxGroupReadDto>> GetAllTaxGroupAsync(CancellationToken cancellationToken)
     {
         var taxGroups = await _context.TaxGroups
             .AsNoTracking()
@@ -30,7 +29,7 @@ public class TaxGroupService : ITaxGroupService
         return _mapper.Map<IEnumerable<TaxGroupReadDto>>(taxGroups);
     }
 
-    public async Task<TaxGroupReadDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<TaxGroupReadDto?> GetByIdTaxGroupAsync(int id, CancellationToken cancellationToken)
     {
         var taxGroup = await _context.TaxGroups
             .AsNoTracking()
@@ -116,6 +115,31 @@ public class TaxGroupService : ITaxGroupService
 
         return _mapper.Map<TaxGroupReadDto>(newTaxGroup);
     }
+
+    public async Task<bool> DeleteTaxGroupAsync(int id, CancellationToken cancellationToken)
+    {
+        var taxGroup = await _context.TaxGroups.FindAsync(new object[] { id }, cancellationToken);
+        if (taxGroup == null)
+        {
+            _logger.LogWarning("Attempted to delete TaxGroup with ID {Id}, but it was not found.", id);
+            return false;
+        }
+
+        _context.TaxGroups.Remove(taxGroup);
+
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation("Deleted TaxGroup with ID {Id}", id);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting TaxGroup with ID {Id}", id);
+            throw;
+        }
+    }
+
 }
 
-   
+
