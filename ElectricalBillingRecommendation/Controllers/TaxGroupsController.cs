@@ -12,13 +12,9 @@ namespace ElectricalBillingRecommendation.Controllers;
     {
         private readonly ITaxGroupService _taxGroupService;
 
-        private readonly AppDbContext _context;  //
-
         public TaxGroupsController(ITaxGroupService taxGroupService, AppDbContext context)
         {
             _taxGroupService = taxGroupService;
-            
-            _context = context;
         }
 
         // GET: api/TaxGroups
@@ -27,7 +23,7 @@ namespace ElectricalBillingRecommendation.Controllers;
         {
             try
             {
-                var taxGroupReadDtos = await _taxGroupService.GetAllAsync(cancellationToken);
+                var taxGroupReadDtos = await _taxGroupService.GetAllTaxGroupAsync(cancellationToken);
                 return Ok(taxGroupReadDtos);
             }
             catch (Exception ex)
@@ -42,7 +38,7 @@ namespace ElectricalBillingRecommendation.Controllers;
         {
             try
             {
-                var taxGroupReadDto = await _taxGroupService.GetByIdAsync(id, cancellationToken);
+                var taxGroupReadDto = await _taxGroupService.GetByIdTaxGroupAsync(id, cancellationToken);
                 if (taxGroupReadDto == null)
                     return NotFound();
 
@@ -63,11 +59,11 @@ namespace ElectricalBillingRecommendation.Controllers;
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool updated;
+            bool isUpdated;
 
             try
             {
-                updated = await _taxGroupService.UpdateTaxGroupAsync(id, taxGroupUpdateDto, cancellationToken);
+                isUpdated = await _taxGroupService.UpdateTaxGroupAsync(id, taxGroupUpdateDto, cancellationToken);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -86,7 +82,7 @@ namespace ElectricalBillingRecommendation.Controllers;
                 return StatusCode(StatusCodes.Status500InternalServerError, "Unexpected error.");
             }
 
-            if (!updated)
+            if (!isUpdated)
                 return NotFound();
 
             return NoContent(); // 204 No Content je standardni odgovor za update bez vraćanja tijela
@@ -116,18 +112,20 @@ namespace ElectricalBillingRecommendation.Controllers;
 
         // DELETE: api/TaxGroups/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTaxGroup(int id)
+        public async Task<IActionResult> DeleteTaxGroup(int id, CancellationToken cancellationToken)
         {
-            var taxGroup = await _context.TaxGroups.FindAsync(id);
-            if (taxGroup == null)
+            try
             {
-                return NotFound();
+                var isDeleted = await _taxGroupService.DeleteTaxGroupAsync(id, cancellationToken);
+                if (!isDeleted)
+                    return NotFound();
+
+                return NoContent(); // 204
             }
-
-            _context.TaxGroups.Remove(taxGroup);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An internal error occurred.");
+            }
         }
     }
 
