@@ -2,38 +2,39 @@
 using ElectricalBillingRecommendation.Data;
 using ElectricalBillingRecommendation.Dtos.TaxGroup;
 using ElectricalBillingRecommendation.Models;
+using ElectricalBillingRecommendation.Repositories;
+using ElectricalBillingRecommendation.Repositories.Interfaces;
 using ElectricalBillingRecommendation.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace ElectricalBillingRecommendation.Services;
 
 public class TaxGroupService : ITaxGroupService
 {
     private readonly AppDbContext _context;
+    private readonly ITaxGroupRepository _taxGroupRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<TaxGroupService> _logger;
 
-    public TaxGroupService(AppDbContext context, IMapper mapper, ILogger<TaxGroupService> logger)
+    public TaxGroupService(AppDbContext context, IMapper mapper, ITaxGroupRepository taxGroupRepository, ILogger<TaxGroupService> logger)
     {
         _context = context;
         _mapper = mapper;
         _logger = logger;
+        _taxGroupRepository = taxGroupRepository;
     }
 
     public async Task<IEnumerable<TaxGroupReadDto>> GetAllTaxGroupAsync(CancellationToken cancellationToken)
     {
-        var taxGroups = await _context.TaxGroups
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var taxGroups = await _taxGroupRepository.GetAllAsync(cancellationToken);
 
         return _mapper.Map<IEnumerable<TaxGroupReadDto>>(taxGroups);
     }
 
     public async Task<TaxGroupReadDto?> GetByIdTaxGroupAsync(int id, CancellationToken cancellationToken)
     {
-        var taxGroup = await _context.TaxGroups
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        var taxGroup = await _taxGroupRepository.GetByIdReadOnlyAsync(id, cancellationToken);
 
         if (taxGroup == null)
         {
@@ -46,7 +47,7 @@ public class TaxGroupService : ITaxGroupService
 
     public async Task<bool> UpdateTaxGroupAsync(int id, TaxGroupUpdateDto taxGroupUpdateDto, CancellationToken cancellationToken)
     {
-        var taxGroup = await _context.TaxGroups.FindAsync(new object[] { id }, cancellationToken);
+        var taxGroup = await _taxGroupRepository.GetByIdTrackedAsync(id, cancellationToken);
 
         if (taxGroup == null)
             return false;
@@ -62,9 +63,10 @@ public class TaxGroupService : ITaxGroupService
 
         taxGroup.UpdatedAt = DateTime.UtcNow;
 
+        _taxGroupRepository.Update(taxGroup);
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await _taxGroupRepository.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -95,11 +97,11 @@ public class TaxGroupService : ITaxGroupService
         var newTaxGroup = _mapper.Map<TaxGroup>(taxGroupCreateDto);
         newTaxGroup.UpdatedAt = DateTime.UtcNow;
 
-        await _context.TaxGroups.AddAsync(newTaxGroup, cancellationToken);
+        await _taxGroupRepository.AddAsync(newTaxGroup, cancellationToken);
 
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await _taxGroupRepository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Created new TaxGroup with ID {Id}", newTaxGroup.Id);
         }
         catch (DbUpdateException ex)
@@ -118,18 +120,18 @@ public class TaxGroupService : ITaxGroupService
 
     public async Task<bool> DeleteTaxGroupAsync(int id, CancellationToken cancellationToken)
     {
-        var taxGroup = await _context.TaxGroups.FindAsync(new object[] { id }, cancellationToken);
+        var taxGroup = await _taxGroupRepository.GetByIdTrackedAsync(id, cancellationToken);
         if (taxGroup == null)
         {
             _logger.LogWarning("Attempted to delete TaxGroup with ID {Id}, but it was not found.", id);
             return false;
         }
 
-        _context.TaxGroups.Remove(taxGroup);
+        _taxGroupRepository.Delete(taxGroup);
 
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await _taxGroupRepository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Deleted TaxGroup with ID {Id}", id);
             return true;
         }
