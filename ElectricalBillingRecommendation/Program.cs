@@ -3,6 +3,8 @@ using ElectricalBillingRecommendation.Services.Interfaces;
 using ElectricalBillingRecommendation.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using ElectricalBillingRecommendation.Repositories.Interfaces;
+using ElectricalBillingRecommendation.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog(); // koristi Serilog kao logger
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<ITaxGroupRepository, TaxGroupRepository>();
 
 
 builder.Services.AddControllers();
