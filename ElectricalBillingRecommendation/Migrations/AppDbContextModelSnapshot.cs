@@ -49,6 +49,38 @@ namespace ElectricalBillingRecommendation.Migrations
                     b.ToTable("plans");
                 });
 
+            modelBuilder.Entity("ElectricalBillingRecommendation.Models.PricingTier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PlanId")
+                        .HasColumnType("integer")
+                        .HasColumnName("plan_id");
+
+                    b.Property<double>("PricePerKwh")
+                        .HasColumnType("double precision")
+                        .HasColumnName("price_per_kwh");
+
+                    b.Property<int>("Threshold")
+                        .HasColumnType("integer")
+                        .HasColumnName("threshold");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlanId");
+
+                    b.ToTable("pricing_tiers");
+                });
+
             modelBuilder.Entity("ElectricalBillingRecommendation.Models.TaxGroup", b =>
                 {
                     b.Property<int>("Id")
@@ -78,6 +110,22 @@ namespace ElectricalBillingRecommendation.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tax_groups");
+                });
+
+            modelBuilder.Entity("ElectricalBillingRecommendation.Models.PricingTier", b =>
+                {
+                    b.HasOne("ElectricalBillingRecommendation.Models.Plan", "Plan")
+                        .WithMany("PricingTiers")
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Plan");
+                });
+
+            modelBuilder.Entity("ElectricalBillingRecommendation.Models.Plan", b =>
+                {
+                    b.Navigation("PricingTiers");
                 });
 #pragma warning restore 612, 618
         }

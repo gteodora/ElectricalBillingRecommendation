@@ -6,5 +6,7 @@ public class Plan
     public string Name { get; set; }
     public double Discount { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public ICollection<PricingTier> PricingTiers { get; set; }
 }
 
