@@ -9,26 +9,26 @@ namespace ElectricalBillingRecommendation.Services;
 
 public class PlanService : IPlanService
 {
-    private readonly IPlanRepository _repository;
+    private readonly IPlanRepository _planRepository;
     private readonly IMapper _mapper;
-    private readonly ILogger<TaxGroupService> _logger;
+    private readonly ILogger<PlanService> _logger;
 
-    public PlanService(IPlanRepository repository, IMapper mapper, ILogger<TaxGroupService> logger)
+    public PlanService(IPlanRepository planRepository, IMapper mapper, ILogger<PlanService> logger)
     {
-        _repository = repository;
+        _planRepository = planRepository;
         _mapper = mapper;
         _logger = logger;
     }
 
     public async Task<IEnumerable<PlanReadDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var plans = await _repository.GetAllAsync(cancellationToken);
+        var plans = await _planRepository.GetAllAsync(cancellationToken);
         return _mapper.Map<IEnumerable<PlanReadDto>>(plans);
     }
 
     public async Task<PlanReadDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var plan = await _repository.GetByIdReadOnlyAsync(id, cancellationToken);
+        var plan = await _planRepository.GetByIdReadOnlyAsync(id, cancellationToken);
 
         if (plan == null)
         {
@@ -44,11 +44,11 @@ public class PlanService : IPlanService
         var newPlan = _mapper.Map<Plan>(planCreateDto);
         newPlan.UpdatedAt = DateTime.UtcNow;
 
-        await _repository.AddAsync(newPlan, cancellationToken);
+        await _planRepository.AddAsync(newPlan, cancellationToken);
 
         try
         {
-            await _repository.SaveChangesAsync(cancellationToken);
+            await _planRepository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Created new Plan with ID {Id}", newPlan.Id);
         }
         catch (DbUpdateException ex)
@@ -67,7 +67,7 @@ public class PlanService : IPlanService
 
     public async Task<bool> UpdateAsync(int id, PlanUpdateDto planUpdateDto, CancellationToken cancellationToken)
     {
-        var plan = await _repository.GetByIdTrackedAsync(id, cancellationToken);
+        var plan = await _planRepository.GetByIdTrackedAsync(id, cancellationToken);
         if (plan == null)
             return false;
 
@@ -79,11 +79,11 @@ public class PlanService : IPlanService
 
         plan.UpdatedAt = DateTime.UtcNow;
 
-        _repository.Update(plan);
+        _planRepository.Update(plan);
 
         try
         {
-            await _repository.SaveChangesAsync(cancellationToken);
+            await _planRepository.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -111,24 +111,24 @@ public class PlanService : IPlanService
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var plan = await _repository.GetByIdTrackedAsync(id, cancellationToken);
+        var plan = await _planRepository.GetByIdTrackedAsync(id, cancellationToken);
         if (plan == null)
         {
             _logger.LogWarning("Attempted to delete Plan with Id {PlanId}, but it was not found.", id);
             return false;
         }
 
-        _repository.Delete(plan);
+        _planRepository.Delete(plan);
 
         try
         {
-            await _repository.SaveChangesAsync(cancellationToken);
+            await _planRepository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Deleted Plan with Id {PlanId}", id);
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while deleting TaxGroup with Id {PlanId}", id);
+            _logger.LogError(ex, "Error occurred while deleting Plan with Id {PlanId}", id);
             throw;
         }
     }

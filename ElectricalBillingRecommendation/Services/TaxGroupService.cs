@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using ElectricalBillingRecommendation.Data;
-using ElectricalBillingRecommendation.Dtos.Plan;
 using ElectricalBillingRecommendation.Dtos.TaxGroup;
 using ElectricalBillingRecommendation.Models;
-using ElectricalBillingRecommendation.Repositories;
 using ElectricalBillingRecommendation.Repositories.Interfaces;
 using ElectricalBillingRecommendation.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +9,12 @@ namespace ElectricalBillingRecommendation.Services;
 
 public class TaxGroupService : ITaxGroupService
 {
-    private readonly AppDbContext _context;
     private readonly ITaxGroupRepository _taxGroupRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<TaxGroupService> _logger;
 
-    public TaxGroupService(AppDbContext context, IMapper mapper, ITaxGroupRepository taxGroupRepository, ILogger<TaxGroupService> logger)
+    public TaxGroupService(IMapper mapper, ITaxGroupRepository taxGroupRepository, ILogger<TaxGroupService> logger)
     {
-        _context = context;
         _mapper = mapper;
         _logger = logger;
         _taxGroupRepository = taxGroupRepository;

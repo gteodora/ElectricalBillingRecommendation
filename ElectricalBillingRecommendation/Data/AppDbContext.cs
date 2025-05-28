@@ -13,13 +13,16 @@ namespace ElectricalBillingRecommendation.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Automatski preslikaj sve nazive tabela i kolona u snake_case
+             modelBuilder.Entity<PricingTier>()
+                .HasOne(pt => pt.Plan)
+                .WithMany(p => p.PricingTiers)
+                .HasForeignKey(pt => pt.PlanId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
-                // Mijenja naziv tabele
                 entity.SetTableName(ToSnakeCase(entity.GetTableName()));
 
-                // Mijenja nazive kolona
                 foreach (var property in entity.GetProperties())
                 {
                     property.SetColumnName(ToSnakeCase(property.Name));
@@ -29,8 +32,6 @@ namespace ElectricalBillingRecommendation.Data
                 {
                     property.SetColumnName(ToSnakeCase(property.Name));
                 }
-
-                // Mijenja nazive ključeva, indeksa itd. ako želiš - slično kao gore
             }
         }
 
@@ -43,6 +44,16 @@ namespace ElectricalBillingRecommendation.Data
         }
 
         public DbSet<Models.TaxGroup> TaxGroups { get; set; }
-        public DbSet<Models.Plan> Plans { get; set; } = default!;
+        public DbSet<Models.Plan> Plans { get; set; }
+        public DbSet<Models.PricingTier> PricingTiers { get; set; }
     }
 }
+
+
+
+/*
+    modelBuilder.Entity<Plan>().HasData(
+    new Plan { Id = 1, Name = "Standard", Discount = 0.1 },
+    new Plan { Id = 2, Name = "Premium", Discount = 0.2 }
+);
+*/

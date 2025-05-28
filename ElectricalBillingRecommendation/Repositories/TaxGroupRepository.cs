@@ -2,7 +2,6 @@
 using ElectricalBillingRecommendation.Models;
 using ElectricalBillingRecommendation.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace ElectricalBillingRecommendation.Repositories;
 

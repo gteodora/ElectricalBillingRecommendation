@@ -12,7 +12,7 @@ namespace ElectricalBillingRecommendation.Controllers;
     {
         private readonly ITaxGroupService _taxGroupService;
 
-        public TaxGroupsController(ITaxGroupService taxGroupService, AppDbContext context)
+        public TaxGroupsController(ITaxGroupService taxGroupService)
         {
             _taxGroupService = taxGroupService;
         }
