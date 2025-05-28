@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using ElectricalBillingRecommendation.Data;
+using ElectricalBillingRecommendation.Dtos.Plan;
 using ElectricalBillingRecommendation.Dtos.TaxGroup;
 using ElectricalBillingRecommendation.Models;
 using ElectricalBillingRecommendation.Repositories;
 using ElectricalBillingRecommendation.Repositories.Interfaces;
 using ElectricalBillingRecommendation.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Core.Types;
 
 namespace ElectricalBillingRecommendation.Services;
 
@@ -52,7 +52,7 @@ public class TaxGroupService : ITaxGroupService
         if (taxGroup == null)
             return false;
 
-        if (taxGroupUpdateDto.Name != null)
+        if (!string.IsNullOrWhiteSpace(taxGroupUpdateDto.Name))
             taxGroup.Name = taxGroupUpdateDto.Name;
 
         if (taxGroupUpdateDto.Vat.HasValue)

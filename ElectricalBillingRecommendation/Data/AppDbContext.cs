@@ -43,5 +43,6 @@ namespace ElectricalBillingRecommendation.Data
         }
 
         public DbSet<Models.TaxGroup> TaxGroups { get; set; }
+        public DbSet<Models.Plan> Plans { get; set; } = default!;
     }
 }
