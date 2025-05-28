@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<ITaxGroupService, TaxGroupService>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console() // log u konzolu
@@ -21,8 +20,10 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog(); // koristi Serilog kao logger
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<ITaxGroupRepository, TaxGroupRepository>();
-
+builder.Services.AddScoped<ITaxGroupService, TaxGroupService>();
+builder.Services.AddScoped<IPlanService, PlanService>();
+builder.Services.AddScoped<ITaxGroupRepository, TaxGroupRepository>();  //da li je scoped ili?
+builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
