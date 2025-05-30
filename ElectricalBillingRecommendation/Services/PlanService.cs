@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElectricalBillingRecommendation.Services;
 
-public class PlanService : IPlanService
+public class PlanService : Interfaces.IPlanService
 {
-    private readonly IPlanRepository _planRepository;
+    private readonly Repositories.Interfaces.IPlanService _planRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<PlanService> _logger;
 
-    public PlanService(IPlanRepository planRepository, IMapper mapper, ILogger<PlanService> logger)
+    public PlanService(Repositories.Interfaces.IPlanService planRepository, IMapper mapper, ILogger<PlanService> logger)
     {
         _planRepository = planRepository;
         _mapper = mapper;
@@ -22,7 +22,8 @@ public class PlanService : IPlanService
 
     public async Task<IEnumerable<PlanReadDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var plans = await _planRepository.GetAllAsync(cancellationToken);
+        var plans = await _planRepository
+            .GetAllAsync(cancellationToken);
         return _mapper.Map<IEnumerable<PlanReadDto>>(plans);
     }
 

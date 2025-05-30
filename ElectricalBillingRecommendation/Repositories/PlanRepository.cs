@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElectricalBillingRecommendation.Repositories;
 
-public class PlanRepository : IPlanRepository
+public class PlanRepository : IPlanService
 {
     private readonly AppDbContext _context;
 
@@ -17,6 +17,7 @@ public class PlanRepository : IPlanRepository
     public async Task<IEnumerable<Plan>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Plans
+            .Include(plans => plans.PricingTiers)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
@@ -24,6 +25,7 @@ public class PlanRepository : IPlanRepository
     public async Task<Plan?> GetByIdReadOnlyAsync(int id, CancellationToken cancellationToken)
     {
         return await _context.Plans
+            .Include(plans => plans.PricingTiers)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }

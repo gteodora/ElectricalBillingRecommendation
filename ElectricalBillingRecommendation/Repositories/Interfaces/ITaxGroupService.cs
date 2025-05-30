@@ -2,7 +2,7 @@
 
 namespace ElectricalBillingRecommendation.Repositories.Interfaces;
 
-public interface ITaxGroupRepository
+public interface ITaxGroupService
 {
     Task<IEnumerable<TaxGroup>> GetAllAsync(CancellationToken cancellationToken);
     Task<TaxGroup?> GetByIdReadOnlyAsync(int id, CancellationToken cancellationToken);
