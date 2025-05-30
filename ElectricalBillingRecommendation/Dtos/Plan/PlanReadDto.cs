@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ElectricalBillingRecommendation.Dtos.PricingTier;
+using System.ComponentModel.DataAnnotations;
 
 namespace ElectricalBillingRecommendation.Dtos.Plan;
 
@@ -13,5 +14,7 @@ public class PlanReadDto
 
     [Range(0, 1)]
     public double Discount { get; set; }
+
+    public ICollection<PricingTierReadDto> PricingTiers { get; set; }
 }
 

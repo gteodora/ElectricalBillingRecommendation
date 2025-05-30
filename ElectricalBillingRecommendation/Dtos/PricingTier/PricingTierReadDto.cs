@@ -7,9 +7,8 @@ public class PricingTierReadDto
     [Required]
     public int Id { get; set; }
 
-    [Required]
     [Range(0, int.MaxValue, ErrorMessage = "Threshold must be positive.")]
-    public int Threshold { get; set; }
+    public int? Threshold { get; set; }
 
     [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "PricePerKwh must be greater than 0.")]

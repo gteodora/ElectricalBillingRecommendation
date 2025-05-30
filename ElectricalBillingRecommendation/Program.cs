@@ -20,12 +20,13 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog(); // koristi Serilog kao logger
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<ITaxGroupService, TaxGroupService>();
-builder.Services.AddScoped<IPlanService, PlanService>();
+builder.Services.AddScoped<ElectricalBillingRecommendation.Services.Interfaces.ITaxGroupService, TaxGroupService>();
+builder.Services.AddScoped<ElectricalBillingRecommendation.Services.Interfaces.IPlanService, PlanService>();
 builder.Services.AddScoped<IPricingTierService, PricingTierService>();
-builder.Services.AddScoped<ITaxGroupRepository, TaxGroupRepository>();  //da li je scoped ili?
-builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+builder.Services.AddScoped<ElectricalBillingRecommendation.Repositories.Interfaces.ITaxGroupService, TaxGroupRepository>();  //da li je scoped ili?
+builder.Services.AddScoped<ElectricalBillingRecommendation.Repositories.Interfaces.IPlanService, PlanRepository>();
 builder.Services.AddScoped<IPricingTierRepository, PricingTierRepository>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

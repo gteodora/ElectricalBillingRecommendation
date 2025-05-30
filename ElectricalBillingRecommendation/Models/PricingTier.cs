@@ -3,7 +3,7 @@
 public class PricingTier
 {
     public int Id { get; set; }
-    public int Threshold { get; set; }
+    public int? Threshold { get; set; }
     public double PricePerKwh { get; set; }
     public DateTime UpdatedAt { get; set; }
 
