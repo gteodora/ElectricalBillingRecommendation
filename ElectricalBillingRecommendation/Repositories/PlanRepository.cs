@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElectricalBillingRecommendation.Repositories;
 
-public class PlanRepository : IPlanService
+public class PlanRepository : IPlanRepository
 {
     private readonly AppDbContext _context;
 

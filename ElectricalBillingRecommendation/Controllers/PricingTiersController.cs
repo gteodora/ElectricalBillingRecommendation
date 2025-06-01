@@ -1,19 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ElectricalBillingRecommendation.Models;
 using ElectricalBillingRecommendation.Services.Interfaces;
-using ElectricalBillingRecommendation.Services;
-using System.Threading;
 using ElectricalBillingRecommendation.Dtos.PricingTier;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectricalBillingRecommendation.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class PricingTiersController : ControllerBase

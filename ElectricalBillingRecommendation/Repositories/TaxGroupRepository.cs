@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElectricalBillingRecommendation.Repositories;
 
-public class TaxGroupRepository : ITaxGroupService
+public class TaxGroupRepository : ITaxGroupRepository
 {
     private readonly AppDbContext _context;
 

@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using ElectricalBillingRecommendation.Data;
 using ElectricalBillingRecommendation.Dtos.TaxGroup;
 using ElectricalBillingRecommendation.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectricalBillingRecommendation.Controllers;
 
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class TaxGroupsController : ControllerBase

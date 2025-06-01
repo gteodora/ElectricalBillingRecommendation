@@ -10,11 +10,11 @@ namespace ElectricalBillingRecommendation.Services;
 public class PricingTierService : IPricingTierService
 {
     private readonly IPricingTierRepository _pricingTierRepository;
-    private readonly Repositories.Interfaces.IPlanService _planRepository;
+    private readonly IPlanRepository _planRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<PricingTierService> _logger;
 
-    public PricingTierService(IPricingTierRepository pricingTierRepository, Repositories.Interfaces.IPlanService planRepository, IMapper mapper, ILogger<PricingTierService> logger)
+    public PricingTierService(IPricingTierRepository pricingTierRepository, IPlanRepository planRepository, IMapper mapper, ILogger<PricingTierService> logger)
     {
         _pricingTierRepository = pricingTierRepository;
         _planRepository = planRepository;

@@ -2,18 +2,17 @@
 using ElectricalBillingRecommendation.Dtos.Plan;
 using ElectricalBillingRecommendation.Models;
 using ElectricalBillingRecommendation.Repositories.Interfaces;
-using ElectricalBillingRecommendation.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElectricalBillingRecommendation.Services;
 
 public class PlanService : Interfaces.IPlanService
 {
-    private readonly Repositories.Interfaces.IPlanService _planRepository;
+    private readonly IPlanRepository _planRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<PlanService> _logger;
 
-    public PlanService(Repositories.Interfaces.IPlanService planRepository, IMapper mapper, ILogger<PlanService> logger)
+    public PlanService(IPlanRepository planRepository, IMapper mapper, ILogger<PlanService> logger)
     {
         _planRepository = planRepository;
         _mapper = mapper;
