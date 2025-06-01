@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ElectricalBillingRecommendation.Data;
-using ElectricalBillingRecommendation.Models;
 using ElectricalBillingRecommendation.Services.Interfaces;
 using ElectricalBillingRecommendation.Dtos.Plan;
-using ElectricalBillingRecommendation.Services;
-using System.Threading;
-using ElectricalBillingRecommendation.Dtos.PricingTier;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectricalBillingRecommendation.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class PlansController : ControllerBase

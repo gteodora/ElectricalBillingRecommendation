@@ -2,7 +2,7 @@
 
 namespace ElectricalBillingRecommendation.Repositories.Interfaces;
 
-public interface IPlanService
+public interface IPlanRepository
 {
     Task<IEnumerable<Plan>> GetAllAsync(CancellationToken cancellationToken);
     Task<Plan?> GetByIdReadOnlyAsync(int id, CancellationToken cancellationToken);

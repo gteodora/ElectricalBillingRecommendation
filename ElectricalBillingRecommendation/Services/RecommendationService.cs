@@ -28,7 +28,6 @@ public class RecommendationService : IRecommendationService
             return null;
         }
 
-        //izbaci planove u kojima nema pricingTier-a:
         plans = plans.Where(plan => plan.PricingTiers != null 
                                    && plan.PricingTiers.Count() > 0
                                    && plan.PricingTiers.Any(pricingTier => pricingTier.Threshold >= averageMonthlyConsumption
@@ -41,56 +40,42 @@ public class RecommendationService : IRecommendationService
             return null;
         }
 
-        Recommendation calculatedRecommendation = new Recommendation(taxGroup, averageMonthlyConsumption);
+        var taxRate = taxGroup.EcoTax + taxGroup.Vat;
 
-        var planPrices = plans
-            .Select(p => CalculatePlanPrice(p, averageMonthlyConsumption))
+        var planSummaries = plans.Select(plan =>
+        {
+            var basePrice = CalculatePlanPrice(plan, averageMonthlyConsumption);
+            var planDiscount = basePrice * plan.Discount;
+            var taxAmount = basePrice * taxRate;
+            var totalPrice = basePrice + planDiscount + taxAmount;
+
+            return new PlanSummary
+            {
+                Plan = plan,
+                BasePrice = basePrice,
+                PlanDiscount = planDiscount,
+                TaxAmount = taxAmount,
+                TotalPrice = totalPrice
+            };
+        }).ToList();
+
+        var lowestTotalPrice = planSummaries.Min(p => p.TotalPrice);
+        var bestPlans = planSummaries
+            .Where(p => p.TotalPrice == lowestTotalPrice)
             .ToList();
 
-        var totalPrices = planPrices
-            .Select(planPrice => planPrice += planPrice * (taxGroup.EcoTax + taxGroup.Vat))
-            .ToList();
-
-        var taxes = planPrices
-            .Select(planPrices => planPrices * (taxGroup.EcoTax + taxGroup.Vat))
-            .ToList();
-
-        
-
-        var lowestTotalPrice = totalPrices.Min();
-        var indexOfLowestTotalPrice = totalPrices.IndexOf(lowestTotalPrice);
-
-        calculatedRecommendation.TotalCost = lowestTotalPrice;
-        //treba vidjeti ima li vise planova iste cijene
-        //calculatedRecommendation.LowestPricePlans = (new List<Plan>()).Add(plans.ToList().[indexOfLowestTotalPrice]);
-        var plansList = plans.ToList();
-        calculatedRecommendation.LowestPricePlan = plansList[indexOfLowestTotalPrice];
-        calculatedRecommendation.TaxCost = taxes[indexOfLowestTotalPrice];
-
-        return calculatedRecommendation;
+        return new Recommendation(taxGroup, averageMonthlyConsumption, bestPlans);
     }
-
-
 
     private double CalculatePlanPrice(PlanReadDto plan, int averageMonthlyConsumption)
     {
-        /*if (plan.PricingTiers != null 
-            && plan.PricingTiers.Count > 0) //ako ima pricing tierova u planu
-        {*/
-
             var pricingTier = plan.PricingTiers
                 .OrderBy(pricingTier => pricingTier.Threshold ?? int.MaxValue)
                 .FirstOrDefault(pricingTier => pricingTier.Threshold >= averageMonthlyConsumption
                                                 || pricingTier.Threshold == null);
             
-
-            //if (pricingTier != null 
-            //    || plan.PricingTiers.Any(pricingTier => pricingTier.Threshold == null))
-           // {
-                return (pricingTier.PricePerKwh * averageMonthlyConsumption) * (1 - plan.Discount);
-           // }
-        //}
-
-       // return 0;
+                return pricingTier.PricePerKwh * averageMonthlyConsumption;
     }
 }
+
+

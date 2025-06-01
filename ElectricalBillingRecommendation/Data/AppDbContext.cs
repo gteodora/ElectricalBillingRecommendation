@@ -1,10 +1,13 @@
 ﻿using ElectricalBillingRecommendation.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using System.Drawing.Text;
 
 namespace ElectricalBillingRecommendation.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -13,7 +16,9 @@ namespace ElectricalBillingRecommendation.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-             modelBuilder.Entity<PricingTier>()
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PricingTier>()
                 .HasOne(pt => pt.Plan)
                 .WithMany(p => p.PricingTiers)
                 .HasForeignKey(pt => pt.PlanId)
@@ -46,8 +51,45 @@ namespace ElectricalBillingRecommendation.Data
         public DbSet<Models.TaxGroup> TaxGroups { get; set; }
         public DbSet<Models.Plan> Plans { get; set; }
         public DbSet<Models.PricingTier> PricingTiers { get; set; }
+
+
+        private void SeedData(ModelBuilder modelBuilder)
+        {
+            //Seed Roles
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" }
+                );
+
+            //Seed Admin Data
+            var hasher = new PasswordHasher<IdentityUser>();
+            var adminUser = new IdentityUser
+            {
+                UserName = "admin@admin.com",
+                NormalizedUserName = "ADMIN@ADMIN.COM",
+                Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
+                PhoneNumber = "1234567890",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                LockoutEnabled = false,
+            };
+            adminUser.PasswordHash = hasher.HashPassword(adminUser, "Admin!123");
+
+            modelBuilder.Entity<IdentityUser>().HasData(adminUser);
+
+            //Assign Role To Admin
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    RoleId = "1",
+                    UserId = adminUser.Id
+                }
+                );
+        }
     }
 }
+
 
 
 

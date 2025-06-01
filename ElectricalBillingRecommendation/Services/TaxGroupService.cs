@@ -9,11 +9,11 @@ namespace ElectricalBillingRecommendation.Services;
 
 public class TaxGroupService : Interfaces.ITaxGroupService
 {
-    private readonly Repositories.Interfaces.ITaxGroupService _taxGroupRepository;
+    private readonly Repositories.Interfaces.ITaxGroupRepository _taxGroupRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<TaxGroupService> _logger;
 
-    public TaxGroupService(IMapper mapper, Repositories.Interfaces.ITaxGroupService taxGroupRepository, ILogger<TaxGroupService> logger)
+    public TaxGroupService(IMapper mapper, Repositories.Interfaces.ITaxGroupRepository taxGroupRepository, ILogger<TaxGroupService> logger)
     {
         _mapper = mapper;
         _logger = logger;
