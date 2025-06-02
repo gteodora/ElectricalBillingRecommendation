@@ -55,16 +55,16 @@ builder.Services.AddAuthorization(options =>
 
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console() // log u konzolu
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // log u fajl po danu
+    .WriteTo.Console() 
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) 
     .CreateLogger();
-builder.Host.UseSerilog(); // koristi Serilog kao logger
+builder.Host.UseSerilog();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ElectricalBillingRecommendation.Services.Interfaces.ITaxGroupService, TaxGroupService>();
 builder.Services.AddScoped<ElectricalBillingRecommendation.Services.Interfaces.IPlanService, PlanService>();
 builder.Services.AddScoped<IPricingTierService, PricingTierService>();
-builder.Services.AddScoped<ITaxGroupRepository, TaxGroupRepository>();  //da li je scoped ili?
+builder.Services.AddScoped<ITaxGroupRepository, TaxGroupRepository>(); 
 builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 builder.Services.AddScoped<IPricingTierRepository, PricingTierRepository>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
@@ -83,7 +83,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Unesi 'Bearer' i zatim tvoj token. Primjer: Bearer 12345abcdef"
+        Description = "Unesi tvoj token. Primjer: 12345abcdef"
     });
 
     options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement

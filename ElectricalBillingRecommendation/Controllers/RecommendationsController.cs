@@ -2,10 +2,8 @@
 using ElectricalBillingRecommendation.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+namespace ElectricalBillingRecommendation.Controllers;
 
-namespace ElectricalBillingRecommendation.Controllers
-{
     [Route("api/[controller]")]
     [ApiController]
     public class RecommendationsController : ControllerBase
@@ -19,36 +17,23 @@ namespace ElectricalBillingRecommendation.Controllers
 
         // GET: api/<RecommendationsController>
         [HttpGet]
-        public async Task<Recommendation> GetAsync([FromQuery] int taxGroupId, int averageMonthlyConsumption, CancellationToken cancellationToken)
+        public async Task<ActionResult<Recommendation>> GetAsync([FromQuery] int taxGroupId, int averageMonthlyConsumption, CancellationToken cancellationToken)
         {
-            //fali obrada ako vrati null
-            return await _recommendationService.GetAllAsync(taxGroupId, averageMonthlyConsumption, cancellationToken);
-        }
-        /*
-        // GET api/<RecommendationsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+            try
+            {
+                var recommendation = await _recommendationService.GetAllAsync(taxGroupId, averageMonthlyConsumption, cancellationToken);
 
-        // POST api/<RecommendationsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+                if (recommendation == null)
+                {
+                    return NotFound("No suitable recommendation found.");
+                }
 
-        // PUT api/<RecommendationsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<RecommendationsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        */
+                return Ok(recommendation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving planss.");
+            }
+        } 
     }
-}
+

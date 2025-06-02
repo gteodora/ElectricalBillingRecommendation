@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricalBillingRecommendation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250530162304_AddUserRoleAndUserRole")]
-    partial class AddUserRoleAndUserRole
+    [Migration("20250602052228_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,22 @@ namespace ElectricalBillingRecommendation.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("plans");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Discount = 0.050000000000000003,
+                            Name = "Standard",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Discount = 0.10000000000000001,
+                            Name = "Premium",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("ElectricalBillingRecommendation.Models.PricingTier", b =>
@@ -82,6 +98,70 @@ namespace ElectricalBillingRecommendation.Migrations
                     b.HasIndex("PlanId");
 
                     b.ToTable("pricing_tiers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PlanId = 1,
+                            PricePerKwh = 0.10000000000000001,
+                            Threshold = 100,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7671)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PlanId = 1,
+                            PricePerKwh = 0.080000000000000002,
+                            Threshold = 300,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7677)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PlanId = 1,
+                            PricePerKwh = 0.070000000000000007,
+                            Threshold = 500,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7680)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            PlanId = 1,
+                            PricePerKwh = 0.059999999999999998,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7682)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            PlanId = 2,
+                            PricePerKwh = 0.089999999999999997,
+                            Threshold = 200,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7684)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            PlanId = 2,
+                            PricePerKwh = 0.070000000000000007,
+                            Threshold = 400,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7686)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            PlanId = 2,
+                            PricePerKwh = 0.050000000000000003,
+                            Threshold = 600,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7688)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            PlanId = 2,
+                            PricePerKwh = 0.040000000000000001,
+                            UpdatedAt = new DateTime(2025, 6, 2, 5, 22, 26, 644, DateTimeKind.Utc).AddTicks(7690)
+                        });
                 });
 
             modelBuilder.Entity("ElectricalBillingRecommendation.Models.TaxGroup", b =>
@@ -113,6 +193,24 @@ namespace ElectricalBillingRecommendation.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tax_groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EcoTax = 0.0050000000000000001,
+                            Name = "household",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Vat = 0.17000000000000001
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EcoTax = 0.01,
+                            Name = "business",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Vat = 0.20000000000000001
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -143,6 +241,20 @@ namespace ElectricalBillingRecommendation.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("asp_net_roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -251,6 +363,25 @@ namespace ElectricalBillingRecommendation.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("asp_net_users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "3183125d-eeb5-4ed4-ac1d-31e3e17c80a1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "18ce7af1-3048-41ed-94e8-5ae26e0890a1",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN@ADMIN.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKEQQl1mDC42xHc7fH5z1wZaeFB4E68UK2999+T4aqSGo7vqZPdqpiva4qWqoXe/JQ==",
+                            PhoneNumber = "1234567890",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "982ff7fc-a2f8-4b4b-8754-6dcd7a7bbf32",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@admin.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -323,6 +454,13 @@ namespace ElectricalBillingRecommendation.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("asp_net_user_roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "3183125d-eeb5-4ed4-ac1d-31e3e17c80a1",
+                            RoleId = "1"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

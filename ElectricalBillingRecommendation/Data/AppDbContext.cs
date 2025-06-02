@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
-using System.Drawing.Text;
 
 namespace ElectricalBillingRecommendation.Data
 {
@@ -38,6 +37,8 @@ namespace ElectricalBillingRecommendation.Data
                     property.SetColumnName(ToSnakeCase(property.Name));
                 }
             }
+
+            SeedData(modelBuilder);
         }
 
         private static string ToSnakeCase(string input)
@@ -86,16 +87,56 @@ namespace ElectricalBillingRecommendation.Data
                     UserId = adminUser.Id
                 }
                 );
+
+            //Seed User Data
+            var consumerUser = new IdentityUser
+            {
+                UserName = "user@user.com",
+                NormalizedUserName = "USER@USER.COM",
+                Email = "user@user.com",
+                NormalizedEmail = "USER@USER.COM",
+                PhoneNumber = "1234567890",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                LockoutEnabled = false,
+            };
+            consumerUser.PasswordHash = hasher.HashPassword(consumerUser, "User!123");
+
+            modelBuilder.Entity<IdentityUser>().HasData(consumerUser);
+
+            //Assign Role To User
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    RoleId = "2",
+                    UserId = consumerUser.Id
+                }
+                );
+
+            // Seed Plan
+            modelBuilder.Entity<Plan>().HasData(
+                new Plan { Id = 1, Name = "Standard", Discount = 0.05 },
+                new Plan { Id = 2, Name = "Premium", Discount = 0.10 }
+            );
+
+            // Seed PricingTier 
+            modelBuilder.Entity<PricingTier>().HasData(
+                new PricingTier { Id = 1, PlanId = 1, Threshold = 100, PricePerKwh = 0.10, UpdatedAt = DateTime.UtcNow },
+                new PricingTier { Id = 2, PlanId = 1, Threshold = 300, PricePerKwh = 0.08, UpdatedAt = DateTime.UtcNow },
+                new PricingTier { Id = 3, PlanId = 1, Threshold = 500, PricePerKwh = 0.07, UpdatedAt = DateTime.UtcNow },
+                new PricingTier { Id = 4, PlanId = 1, Threshold = null, PricePerKwh = 0.06, UpdatedAt = DateTime.UtcNow },
+
+                new PricingTier { Id = 5, PlanId = 2, Threshold = 200, PricePerKwh = 0.09, UpdatedAt = DateTime.UtcNow },
+                new PricingTier { Id = 6, PlanId = 2, Threshold = 400, PricePerKwh = 0.07, UpdatedAt = DateTime.UtcNow },
+                new PricingTier { Id = 7, PlanId = 2, Threshold = 600, PricePerKwh = 0.05, UpdatedAt = DateTime.UtcNow },
+                new PricingTier { Id = 8, PlanId = 2, Threshold = null, PricePerKwh = 0.04, UpdatedAt = DateTime.UtcNow }
+            );
+
+            modelBuilder.Entity<TaxGroup>().HasData(
+            new TaxGroup { Id = 1, Name = "household", Vat = 0.17, EcoTax = 0.005 },
+            new TaxGroup { Id = 2, Name = "business", Vat = 0.20, EcoTax = 0.010 }
+             );
+
         }
     }
 }
-
-
-
-
-/*
-    modelBuilder.Entity<Plan>().HasData(
-    new Plan { Id = 1, Name = "Standard", Discount = 0.1 },
-    new Plan { Id = 2, Name = "Premium", Discount = 0.2 }
-);
-*/
