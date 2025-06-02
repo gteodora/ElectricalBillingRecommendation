@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ElectricalBillingRecommendation.Data;
 using ElectricalBillingRecommendation.Dtos.TaxGroup;
 using ElectricalBillingRecommendation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;

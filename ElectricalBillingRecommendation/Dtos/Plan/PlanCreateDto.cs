@@ -6,7 +6,7 @@ public class PlanCreateDto
 {
     [Required]
     [MaxLength(255)]
-    public string Name { get; set; } //= default;
+    public string Name { get; set; }
 
     [Range(0, 1)]
     public double Discount { get; set; }

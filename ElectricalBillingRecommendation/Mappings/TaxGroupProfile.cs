@@ -9,7 +9,8 @@ public class TaxGroupProfile : Profile
     public TaxGroupProfile()
     {
         // Mapiranje iz entiteta u DTO
-        CreateMap<TaxGroup, TaxGroupReadDto>();
+        CreateMap<TaxGroup, TaxGroupReadDto>()
+            .ForMember(dest => dest.TaxGroup, opt => opt.MapFrom(src => src.Name));
 
         // Mapiranje iz Create i Update DTO u entitet
         CreateMap<TaxGroupCreateDto, TaxGroup>();

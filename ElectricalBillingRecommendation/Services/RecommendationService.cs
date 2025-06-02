@@ -47,7 +47,7 @@ public class RecommendationService : IRecommendationService
             var basePrice = CalculatePlanPrice(plan, averageMonthlyConsumption);
             var planDiscount = basePrice * plan.Discount;
             var taxAmount = basePrice * taxRate;
-            var totalPrice = basePrice + planDiscount + taxAmount;
+            var totalPrice = basePrice - planDiscount + taxAmount;
 
             return new PlanSummary
             {
